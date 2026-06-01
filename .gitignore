@@ -36,6 +36,4 @@ release/
 *.blockmap
 latest*.yml
 
-*.mp3
-*.bms
 /bms
