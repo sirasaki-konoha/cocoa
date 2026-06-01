@@ -39,6 +39,8 @@ input {
 
 body[data-screen='home'] .hud,
 body[data-screen='home'] .lane-keys,
+body[data-screen='settings'] .hud,
+body[data-screen='settings'] .lane-keys,
 body[data-screen='select'] .hud,
 body[data-screen='select'] .lane-keys {
   opacity: 0;
@@ -103,6 +105,57 @@ body[data-screen='select'] .lane-keys {
   box-shadow: 0 26px 52px rgba(8, 4, 2, 0.38);
   content: '';
   pointer-events: none;
+}
+
+.settings-screen {
+  background:
+    linear-gradient(90deg, rgba(14, 8, 4, 0.74), rgba(43, 27, 15, 0.5), rgba(14, 8, 4, 0.78)),
+    repeating-linear-gradient(90deg, rgba(255, 232, 189, 0.028) 0 1px, transparent 1px 14px),
+    radial-gradient(circle at 70% 34%, rgba(223, 169, 91, 0.14), transparent 26%);
+}
+
+.settings-card {
+  position: fixed;
+  left: clamp(28px, 8vw, 112px);
+  top: 50%;
+  width: min(620px, 82vw);
+  transform: translateY(-50%);
+  border: 1px solid rgba(197, 139, 74, 0.46);
+  border-radius: 28px;
+  padding: clamp(26px, 5vw, 46px);
+  background:
+    linear-gradient(145deg, rgba(63, 39, 21, 0.94), rgba(27, 16, 9, 0.96)),
+    repeating-linear-gradient(0deg, rgba(255, 234, 195, 0.026) 0 1px, transparent 1px 8px);
+  box-shadow:
+    0 28px 70px rgba(9, 4, 2, 0.58),
+    inset 0 1px 0 rgba(255, 235, 197, 0.12);
+}
+
+.settings-card h1 {
+  margin-bottom: 28px;
+}
+
+.settings-row {
+  display: grid;
+  grid-template-columns: 110px minmax(150px, 1fr) 62px;
+  gap: 16px;
+  margin-top: 18px;
+  color: #f5e4c8;
+}
+
+.settings-row input[type='range'] {
+  width: 100%;
+}
+
+.settings-row strong {
+  color: #e8bf73;
+  text-align: right;
+}
+
+.settings-help {
+  margin: 24px 0 0;
+  color: rgba(239, 216, 181, 0.68);
+  line-height: 1.7;
 }
 
 .home-clock {

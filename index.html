@@ -53,6 +53,30 @@
         </div>
       </section>
 
+      <section id="settings-panel" class="screen-panel settings-screen" hidden>
+        <button id="settings-back-button" class="round-button back-button" type="button" aria-label="ホームへ戻る">‹</button>
+        <div class="settings-card">
+          <p class="eyebrow">SETTINGS</p>
+          <h1>音量設定</h1>
+          <label class="settings-row">
+            <span>MASTER</span>
+            <input id="master-volume" type="range" min="0" max="1" step="0.01" value="0.8" />
+            <strong id="master-volume-value">80%</strong>
+          </label>
+          <label class="settings-row">
+            <span>MUSIC</span>
+            <input id="music-volume" type="range" min="0" max="1" step="0.01" value="0.8" />
+            <strong id="music-volume-value">80%</strong>
+          </label>
+          <label class="settings-row">
+            <span>SFX</span>
+            <input id="sfx-volume" type="range" min="0" max="1" step="0.01" value="0.8" />
+            <strong id="sfx-volume-value">80%</strong>
+          </label>
+          <p class="settings-help">ホームBGM、選曲プレビュー、プレイ曲、ボタン効果音に反映されます。</p>
+        </div>
+      </section>
+
       <section id="chart-select-panel" class="screen-panel chart-select-screen" hidden>
         <button id="back-home-button" class="round-button back-button" type="button" aria-label="ホームへ戻る">‹</button>
         <div class="chart-feature">

@@ -8,12 +8,14 @@ export class UiRenderer {
       bonus: document.querySelector('#bonus-callout'),
       progress: document.querySelector('#progress'),
       homePanel: document.querySelector('#home-panel'),
+      settingsPanel: document.querySelector('#settings-panel'),
       chartSelectPanel: document.querySelector('#chart-select-panel'),
       resultPanel: document.querySelector('#result-panel'),
       countdown: document.querySelector('#countdown'),
       homeClock: document.querySelector('#home-clock'),
       homeStartButton: document.querySelector('#home-start-button'),
       settingsButton: document.querySelector('#settings-button'),
+      settingsBackButton: document.querySelector('#settings-back-button'),
       backHomeButton: document.querySelector('#back-home-button'),
       startButton: document.querySelector('#start-button'),
       retryButton: document.querySelector('#retry-button'),
@@ -29,6 +31,12 @@ export class UiRenderer {
       offsetValue: document.querySelector('#offset-value'),
       speed: document.querySelector('#speed'),
       speedValue: document.querySelector('#speed-value'),
+      masterVolume: document.querySelector('#master-volume'),
+      musicVolume: document.querySelector('#music-volume'),
+      sfxVolume: document.querySelector('#sfx-volume'),
+      masterVolumeValue: document.querySelector('#master-volume-value'),
+      musicVolumeValue: document.querySelector('#music-volume-value'),
+      sfxVolumeValue: document.querySelector('#sfx-volume-value'),
       rank: document.querySelector('#rank'),
       resultScore: document.querySelector('#result-score'),
       resultMaxCombo: document.querySelector('#result-max-combo'),
@@ -86,6 +94,15 @@ export class UiRenderer {
   showHome() {
     document.body.dataset.screen = 'home';
     this.elements.homePanel.hidden = false;
+    this.elements.settingsPanel.hidden = true;
+    this.elements.chartSelectPanel.hidden = true;
+    this.elements.resultPanel.hidden = true;
+  }
+
+  showSettings() {
+    document.body.dataset.screen = 'settings';
+    this.elements.homePanel.hidden = true;
+    this.elements.settingsPanel.hidden = false;
     this.elements.chartSelectPanel.hidden = true;
     this.elements.resultPanel.hidden = true;
   }
@@ -93,6 +110,7 @@ export class UiRenderer {
   showChartSelect() {
     document.body.dataset.screen = 'select';
     this.elements.homePanel.hidden = true;
+    this.elements.settingsPanel.hidden = true;
     this.elements.chartSelectPanel.hidden = false;
     this.elements.resultPanel.hidden = true;
   }
@@ -100,6 +118,7 @@ export class UiRenderer {
   hideStart() {
     document.body.dataset.screen = 'play';
     this.elements.homePanel.hidden = true;
+    this.elements.settingsPanel.hidden = true;
     this.elements.chartSelectPanel.hidden = true;
   }
 
@@ -142,6 +161,31 @@ export class UiRenderer {
 
   bindSettings(handler) {
     this.elements.settingsButton.addEventListener('click', handler);
+  }
+
+  bindSettingsBack(handler) {
+    this.elements.settingsBackButton.addEventListener('click', handler);
+  }
+
+  bindVolumeSettings(handler) {
+    const bind = (element, key) => {
+      element.addEventListener('input', () => {
+        handler(key, Number(element.value));
+      });
+    };
+
+    bind(this.elements.masterVolume, 'master');
+    bind(this.elements.musicVolume, 'music');
+    bind(this.elements.sfxVolume, 'sfx');
+  }
+
+  setVolumeSettings(settings) {
+    this.elements.masterVolume.value = settings.master;
+    this.elements.musicVolume.value = settings.music;
+    this.elements.sfxVolume.value = settings.sfx;
+    this.elements.masterVolumeValue.textContent = `${Math.round(settings.master * 100)}%`;
+    this.elements.musicVolumeValue.textContent = `${Math.round(settings.music * 100)}%`;
+    this.elements.sfxVolumeValue.textContent = `${Math.round(settings.sfx * 100)}%`;
   }
 
   bindShowChartSelect(handler) {

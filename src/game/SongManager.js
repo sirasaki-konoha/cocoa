@@ -3,6 +3,7 @@ export class SongManager {
     this.audio = new Audio();
     this.audio.preload = 'auto';
     this.audio.volume = 0.72;
+    this.volumeScale = 1;
     this.chartDuration = 0;
     this.offset = 0;
     this.objectUrl = null;
@@ -10,6 +11,7 @@ export class SongManager {
     this.previewStart = 0;
     this.previewEnd = 0;
     this.fadeFrame = 0;
+    this.fadeResolve = null;
     this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
     this.audio.addEventListener('timeupdate', this.handleTimeUpdate);
   }
@@ -40,7 +42,7 @@ export class SongManager {
   async start() {
     this.cancelFade();
     this.isPreviewing = false;
-    this.audio.volume = 0.72;
+    this.audio.volume = 0.72 * this.volumeScale;
     this.safeSetCurrentTime(0);
     await this.audio.play();
   }
@@ -49,7 +51,7 @@ export class SongManager {
     this.cancelFade();
     this.isPreviewing = false;
     this.audio.pause();
-    this.audio.volume = 0.72;
+    this.audio.volume = 0.72 * this.volumeScale;
     this.safeSetCurrentTime(0);
   }
 
@@ -66,7 +68,7 @@ export class SongManager {
 
     try {
       await this.audio.play();
-      await this.fadeVolume(0.38, 650);
+      await this.fadeVolume(0.38 * this.volumeScale, 650);
       return true;
     } catch {
       this.isPreviewing = false;
@@ -79,7 +81,7 @@ export class SongManager {
     this.cancelFade();
     this.isPreviewing = false;
     this.audio.pause();
-    this.audio.volume = 0.72;
+    this.audio.volume = 0.72 * this.volumeScale;
   }
 
   async fadeOutPreview(duration = 360) {
@@ -88,7 +90,7 @@ export class SongManager {
     await this.fadeVolume(0, duration);
     this.isPreviewing = false;
     this.audio.pause();
-    this.audio.volume = 0.72;
+    this.audio.volume = 0.72 * this.volumeScale;
   }
 
   getTime() {
@@ -112,6 +114,13 @@ export class SongManager {
 
   setOffset(offset) {
     this.offset = offset;
+  }
+
+  setVolumeScale(volumeScale) {
+    this.volumeScale = Math.max(0, Math.min(1, Number(volumeScale) || 0));
+    if (!this.isPreviewing) {
+      this.audio.volume = 0.72 * this.volumeScale;
+    }
   }
 
   handleTimeUpdate() {
@@ -145,6 +154,7 @@ export class SongManager {
 
         if (progress >= 1) {
           this.fadeFrame = 0;
+          this.fadeResolve = null;
           resolve();
           return;
         }
@@ -157,9 +167,15 @@ export class SongManager {
   }
 
   cancelFade() {
-    if (!this.fadeFrame) return;
-    window.cancelAnimationFrame(this.fadeFrame);
-    this.fadeFrame = 0;
+    if (this.fadeFrame) {
+      window.cancelAnimationFrame(this.fadeFrame);
+      this.fadeFrame = 0;
+    }
+
+    if (this.fadeResolve) {
+      this.fadeResolve();
+      this.fadeResolve = null;
+    }
   }
 }
 

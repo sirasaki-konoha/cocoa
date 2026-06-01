@@ -1,3 +1,4 @@
+import { AudioManager } from './AudioManager.js';
 import { BgaManager } from '../render/BgaManager.js';
 import { LaneRenderer } from '../render/LaneRenderer.js';
 import { NoteRenderer } from '../render/NoteRenderer.js';
@@ -16,6 +17,7 @@ export class Game {
     this.renderer = new Renderer(root);
     this.uiRenderer = new UiRenderer();
     this.chartLoader = new ChartLoader();
+    this.audioManager = new AudioManager();
     this.songManager = new SongManager();
     this.scoreManager = new ScoreManager();
     this.bgaManager = new BgaManager(this.renderer.scene);
@@ -47,7 +49,9 @@ export class Game {
     this.uiRenderer.renderChartList(this.chartEntries, this.selectedChartId);
     this.uiRenderer.bindHomeStart(() => this.showChartSelect());
     this.uiRenderer.bindBackHome(() => this.showHome());
-    this.uiRenderer.bindSettings(() => this.uiRenderer.setChartMessage('設定は次の実装で追加予定です。'));
+    this.uiRenderer.bindSettings(() => this.showSettings());
+    this.uiRenderer.bindSettingsBack(() => this.showHome());
+    this.uiRenderer.bindVolumeSettings((key, value) => this.updateVolumeSetting(key, value));
     this.uiRenderer.bindStart(() => this.start());
     this.uiRenderer.bindShowChartSelect(() => this.showChartSelect());
     this.uiRenderer.bindChartSelection((chartId) => this.selectBuiltInChart(chartId));
@@ -60,6 +64,9 @@ export class Game {
       this.scrollSpeed = speed;
     });
 
+    this.audioManager.bindButtonSounds();
+    this.uiRenderer.setVolumeSettings(this.audioManager.getSettings());
+    this.songManager.setVolumeScale(this.audioManager.getMusicVolume());
     await this.applyChart(this.chartEntries[0].chart, this.selectedChartId);
     this.uiRenderer.setChartMessage('矢印キーで曲を選び、Playで開始します。');
     this.inputManager.start();
@@ -129,9 +136,20 @@ export class Game {
 
     this.state = 'home';
     this.songManager.stopPreview();
+    this.audioManager.playHomeBgm();
     this.scoreManager.reset();
     this.noteManager.reset();
     this.uiRenderer.showHome();
+    this.laneRenderer.setVisible(false);
+  }
+
+  showSettings() {
+    if (this.state === 'playing' || this.state === 'starting') return;
+
+    this.state = 'settings';
+    this.songManager.stopPreview();
+    this.audioManager.playHomeBgm();
+    this.uiRenderer.showSettings();
     this.laneRenderer.setVisible(false);
   }
 
@@ -139,6 +157,7 @@ export class Game {
     if (this.state === 'playing' || this.state === 'starting') return;
 
     this.state = 'ready';
+    this.audioManager.stopHomeBgm();
     this.scoreManager.reset();
     this.noteManager.reset();
     this.uiRenderer.showChartSelect();
@@ -168,6 +187,7 @@ export class Game {
     if (this.state === 'starting' || this.state === 'playing') return;
 
     this.state = 'starting';
+    this.audioManager.stopHomeBgm();
     await this.songManager.fadeOutPreview(260);
     this.uiRenderer.hideStart();
     this.uiRenderer.hideResult();
@@ -202,6 +222,19 @@ export class Game {
   }
 
   handleGlobalKeyDown(event) {
+    if (this.state === 'playing' && event.code === 'Escape') {
+      event.preventDefault();
+      this.audioManager.playEscape();
+      this.finish(true);
+      return;
+    }
+
+    if (this.state === 'settings' && event.code === 'Escape') {
+      event.preventDefault();
+      this.showHome();
+      return;
+    }
+
     if (this.state !== 'ready') return;
 
     if (event.code === 'ArrowLeft') {
@@ -266,6 +299,12 @@ export class Game {
     this.noteManager.reset();
     this.laneRenderer.setVisible(false);
     this.uiRenderer.showResult(this.scoreManager, this.scoreManager.getRank(this.chart.notes.length));
+  }
+
+  updateVolumeSetting(key, value) {
+    this.audioManager.setSetting(key, value);
+    this.uiRenderer.setVolumeSettings(this.audioManager.getSettings());
+    this.songManager.setVolumeScale(this.audioManager.getMusicVolume());
   }
 }
 
