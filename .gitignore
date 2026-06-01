@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# environment variables
+.env
+.env.*
+
+# build output
+dist/
+build/
+out/
+
+# cache
+.cache/
+.parcel-cache/
+.eslintcache
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Electron build artifacts
+release/
+
+# electron-builder
+*.blockmap
+latest*.yml
+
+*.mp3
+*.bms

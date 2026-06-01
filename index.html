@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cocoa Rhythm Prototype</title>
+  </head>
+  <body>
+    <div id="app">
+      <div id="game-root" aria-label="7レーン音楽ゲーム画面"></div>
+
+      <header class="hud hud-top">
+        <div>
+          <p class="hud-label">TITLE</p>
+          <p id="song-title" class="hud-value">Loading...</p>
+        </div>
+        <div>
+          <p class="hud-label">SCORE</p>
+          <p id="score" class="hud-value score">0</p>
+        </div>
+        <div>
+          <p class="hud-label">COMBO</p>
+          <p id="combo" class="hud-value">0</p>
+        </div>
+      </header>
+
+      <div id="judge" class="judge" aria-live="polite"></div>
+      <div id="bonus-callout" class="bonus-callout">SCORE x1.2!</div>
+
+      <div class="lane-keys" aria-hidden="true">
+        <span>A</span><span>W</span><span>E</span><span>F</span><span>J</span><span>I</span><span>O</span>
+      </div>
+
+      <footer class="hud hud-bottom">
+        <label>
+          OFFSET
+          <input id="offset" type="range" min="-2" max="2" step="0.005" value="0" />
+          <span id="offset-value">0ms</span>
+        </label>
+        <label>
+          SPEED
+          <input id="speed" type="range" min="1.6" max="4.2" step="0.1" value="2.4" />
+          <span id="speed-value">2.4</span>
+        </label>
+        <div class="progress-shell"><div id="progress" class="progress-bar"></div></div>
+      </footer>
+
+      <section id="home-panel" class="screen-panel home-screen">
+        <time id="home-clock" class="home-clock">00:00</time>
+        <div class="home-actions">
+          <button id="settings-button" class="round-button settings-button" type="button" aria-label="設定">⚙</button>
+          <button id="home-start-button" class="round-button start-round-button" type="button">Start</button>
+        </div>
+      </section>
+
+      <section id="chart-select-panel" class="screen-panel chart-select-screen" hidden>
+        <button id="back-home-button" class="round-button back-button" type="button" aria-label="ホームへ戻る">‹</button>
+        <div class="chart-feature">
+          <p class="eyebrow">SELECT</p>
+          <h1 id="selected-chart-title" class="selected-chart-title">Loading...</h1>
+          <p id="selected-chart-meta" class="selected-chart-meta">Unknown</p>
+          <p id="selected-chart-description" class="selected-chart-description"></p>
+          <p id="chart-message" class="chart-message" role="status"></p>
+          <div class="select-controls">
+            <span>← / → 曲変更</span>
+            <span id="chart-count">1 / 1</span>
+          </div>
+          <label class="file-button import-button">
+            IMPORT JSON
+            <input id="chart-file" type="file" accept="application/json,.json" />
+          </label>
+        </div>
+        <div id="chart-list" class="chart-list" aria-label="譜面リスト"></div>
+        <button id="start-button" class="round-button play-round-button" type="button">Play</button>
+      </section>
+
+      <section id="countdown" class="countdown" hidden>3</section>
+
+      <section id="result-panel" class="overlay-panel" hidden>
+        <div class="panel-card result-card">
+          <p class="eyebrow">RESULT</p>
+          <h2 id="rank">D</h2>
+          <dl class="result-grid">
+            <div><dt>Score</dt><dd id="result-score">0</dd></div>
+            <div><dt>Max Combo</dt><dd id="result-max-combo">0</dd></div>
+            <div><dt>Perfect</dt><dd id="result-perfect">0</dd></div>
+            <div><dt>Great</dt><dd id="result-great">0</dd></div>
+            <div><dt>Miss</dt><dd id="result-miss">0</dd></div>
+            <div><dt>Bonus</dt><dd id="result-bonus">0</dd></div>
+          </dl>
+          <button id="retry-button" type="button">RETRY</button>
+          <button id="select-chart-button" class="ghost-button" type="button">SELECT CHART</button>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
