@@ -38,3 +38,4 @@ latest*.yml
 
 *.mp3
 *.bms
+/bms
